@@ -29,28 +29,32 @@
         
         .card { background: var(--surface); border-radius: var(--radius); padding: 20px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         
+        /* Gamification & Streak */
+        .gamify-box { background: #1a1a1a; border: 2px solid #333; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .gamify-header { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
+        .gamify-status { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .hp-bar-bg { background: #333; height: 16px; border-radius: 8px; overflow: hidden; position: relative; }
+        .hp-bar-fill { height: 100%; border-radius: 8px; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.4s; }
+        .hp-text { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 10px; line-height: 16px; font-weight: bold; color: #fff; text-shadow: 1px 1px 2px #000; }
+        
+        .streak-fire { color: #ff9100; font-size: 24px; text-shadow: 0 0 15px rgba(255,145,0,0.6); display: inline-block; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
         /* Dashboard */
-        .total-display { font-size: 42px; font-weight: bold; text-align: center; margin: 10px 0; }
+        .total-display { font-size: 42px; font-weight: bold; text-align: center; margin: 10px 0; display: flex; align-items: center; justify-content: center; gap: 10px; }
         .month-label { text-align: center; color: var(--text-dim); text-transform: uppercase; font-size: 12px; letter-spacing: 1px; }
         
-        /* Category Bars */
         .bar-container { margin-bottom: 12px; }
         .bar-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; }
         .bar-bg { background: var(--surface-light); height: 8px; border-radius: 4px; overflow: hidden; }
         .bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s ease; }
         
-        /* Input Form */
-        input[type="number"], input[type="text"] {
-            width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444;
-            background: var(--surface-light); color: white; font-size: 16px; margin-bottom: 15px;
-        }
+        /* Inputs & Buttons */
+        input[type="number"], input[type="text"] { width: 100%; padding: 15px; border-radius: 8px; border: 1px solid #444; background: var(--surface-light); color: white; font-size: 16px; margin-bottom: 15px; }
         input[type="number"] { font-size: 24px; font-weight: bold; text-align: center; }
         
         .chips { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px; }
-        .chip {
-            padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 14px;
-            background: var(--surface-light); color: var(--text-dim); border: 2px solid transparent; cursor: pointer;
-        }
+        .chip { padding: 12px; border-radius: 8px; text-align: center; font-weight: bold; font-size: 14px; background: var(--surface-light); color: var(--text-dim); border: 2px solid transparent; cursor: pointer; }
         .chip.active[data-cat="Dagligvarer"] { background: rgba(0,230,118,0.1); color: var(--cat-1); border-color: var(--cat-1); }
         .chip.active[data-cat="Fornøjelser"] { background: rgba(255,145,0,0.1); color: var(--cat-2); border-color: var(--cat-2); }
         .chip.active[data-cat="Transport"] { background: rgba(224,64,251,0.1); color: var(--cat-3); border-color: var(--cat-3); }
@@ -58,6 +62,11 @@
 
         button.submit { width: 100%; padding: 16px; border-radius: 8px; border: none; background: var(--primary); color: white; font-weight: bold; font-size: 16px; cursor: pointer; }
         button.submit:active { transform: scale(0.98); }
+        button.secondary { background: transparent; border: 2px solid #555; color: var(--text); margin-top: 10px; }
+
+        .settings-row { display: flex; gap: 10px; align-items: center; margin-bottom: 10px; }
+        .settings-row input { margin-bottom: 0; font-size: 16px; text-align: left; padding: 10px; }
+        .settings-row button { width: auto; padding: 10px 20px; margin-bottom: 0; }
 
         /* History */
         .log-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #333; }
@@ -69,7 +78,6 @@
         .log-amt { font-weight: bold; font-size: 16px; }
         .del-btn { background: transparent; border: none; color: var(--danger); font-size: 18px; padding: 5px; cursor: pointer; }
 
-        /* Colors for log */
         .c-Dagligvarer { color: var(--cat-1); }
         .c-Fornøjelser { color: var(--cat-2); }
         .c-Transport { color: var(--cat-3); }
@@ -79,8 +87,22 @@
 <body>
 
     <div class="card">
+        <div class="gamify-box">
+            <div class="gamify-header">
+                <span style="color: var(--cat-1);">🎯 Mad-Survival</span>
+                <span id="gamifyStatus" class="gamify-status"></span>
+            </div>
+            <div class="hp-bar-bg">
+                <div class="hp-bar-fill" id="hpBar"></div>
+                <div class="hp-text" id="hpText">0 / 0 kr.</div>
+            </div>
+        </div>
+
         <div class="month-label" id="monthLabel">Denne Måned</div>
-        <div class="total-display" id="totalSpend">0 kr.</div>
+        <div class="total-display">
+            <span id="totalSpend">0 kr.</span>
+            <span id="streakIndicator"></span>
+        </div>
         <div id="analytics"></div>
     </div>
 
@@ -100,15 +122,25 @@
     </div>
 
     <div class="card">
+        <h3>Indstillinger & Data</h3>
+        <div class="metric-label" style="font-size: 12px; color: var(--text-dim); margin-bottom: 5px;">Ugentligt madbudget (kr.):</div>
+        <div class="settings-row">
+            <input type="number" id="budgetInput" placeholder="F.eks. 1000">
+            <button class="submit" onclick="saveBudget()">Gem</button>
+        </div>
+        <button class="submit secondary" onclick="exportCSV()">📊 Eksportér alt til Excel (.csv)</button>
+    </div>
+
+    <div class="card">
         <h3>Seneste 15 køb</h3>
         <div id="history"></div>
     </div>
 
     <script>
         let transactions = JSON.parse(localStorage.getItem('finTrackerData')) || [];
+        let weeklyBudget = parseInt(localStorage.getItem('finTrackerBudget')) || 1000;
         let selectedCategory = "Dagligvarer";
 
-        // Chip selection logic
         document.querySelectorAll('.chip').forEach(chip => {
             chip.addEventListener('click', function() {
                 document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -121,6 +153,40 @@
             return new Intl.NumberFormat('da-DK', { maximumFractionDigits: 0 }).format(num) + ' kr.';
         }
 
+        function getMonday(d) {
+            d = new Date(d);
+            var day = d.getDay(), diff = d.getDate() - day + (day == 0 ? -6 : 1);
+            d.setDate(diff);
+            d.setHours(0,0,0,0);
+            return d;
+        }
+
+        function calculateNoSpendStreak() {
+            if (transactions.length === 0) return 0;
+            const datesWithTxns = new Set(transactions.map(t => new Date(t.date).toLocaleDateString('da-DK')));
+            let streak = 0;
+            let d = new Date();
+            
+            for (let i = 0; i < 365; i++) {
+                if (!datesWithTxns.has(d.toLocaleDateString('da-DK'))) {
+                    streak++;
+                    d.setDate(d.getDate() - 1);
+                } else {
+                    break;
+                }
+            }
+            return streak;
+        }
+
+        function saveBudget() {
+            const val = parseInt(document.getElementById('budgetInput').value);
+            if (!isNaN(val) && val > 0) {
+                weeklyBudget = val;
+                localStorage.setItem('finTrackerBudget', weeklyBudget);
+                updateUI();
+            }
+        }
+
         function addTransaction() {
             const amtInput = document.getElementById('amt').value.replace(',', '.');
             const amount = parseFloat(amtInput);
@@ -128,14 +194,7 @@
             
             if (isNaN(amount) || amount <= 0) return alert("Indtast et gyldigt beløb.");
 
-            const txn = {
-                id: Date.now(),
-                date: new Date().toISOString(),
-                amount: amount,
-                category: selectedCategory,
-                desc: desc
-            };
-
+            const txn = { id: Date.now(), date: new Date().toISOString(), amount: amount, category: selectedCategory, desc: desc };
             transactions.unshift(txn);
             localStorage.setItem('finTrackerData', JSON.stringify(transactions));
             
@@ -152,23 +211,76 @@
             }
         }
 
+        function exportCSV() {
+            if (transactions.length === 0) return alert("Ingen data at eksportere.");
+            // Semikolon-separeret til dansk Excel. Beløb konverteres fra punktum til komma.
+            let csv = "Dato;Kategori;Beloeb;Note\n";
+            transactions.forEach(t => {
+                let d = new Date(t.date).toLocaleDateString('da-DK');
+                let a = t.amount.toString().replace('.', ',');
+                let desc = t.desc.replace(/;/g, ','); // Undgå at semikolon i noter ødelægger kolonnen
+                csv += `${d};${t.category};${a};${desc}\n`;
+            });
+
+            const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: "text/csv;charset=utf-8;" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = `Oekonomi_Eksport_${new Date().toLocaleDateString('da-DK')}.csv`;
+            link.click();
+        }
+
         function updateUI() {
             const now = new Date();
-            const currentMonth = now.getMonth();
-            const currentYear = now.getFullYear();
-            
-            document.getElementById('monthLabel').innerText = now.toLocaleString('da-DK', { month: 'long', year: 'numeric' });
+            document.getElementById('budgetInput').value = weeklyBudget;
 
-            // Filter this month's data
+            // Streak 
+            const streak = calculateNoSpendStreak();
+            const streakEl = document.getElementById('streakIndicator');
+            if (streak > 0) {
+                streakEl.innerHTML = `<span class="streak-fire" title="${streak} dage uden køb">🔥<span style="font-size:12px;color:white;">${streak}</span></span>`;
+            } else {
+                streakEl.innerHTML = '';
+            }
+
+            // Budget
+            const thisMonday = getMonday(now);
+            const thisWeekGroceries = transactions.filter(t => {
+                const d = new Date(t.date);
+                return t.category === "Dagligvarer" && d >= thisMonday;
+            }).reduce((sum, t) => sum + t.amount, 0);
+
+            const hpPct = Math.min((thisWeekGroceries / weeklyBudget) * 100, 100);
+            const left = weeklyBudget - thisWeekGroceries;
+            
+            const hpBar = document.getElementById('hpBar');
+            hpBar.style.width = hpPct + '%';
+            document.getElementById('hpText').innerText = formatDKK(thisWeekGroceries) + ' / ' + formatDKK(weeklyBudget);
+            
+            const statusEl = document.getElementById('gamifyStatus');
+            if (left < 0) {
+                hpBar.style.backgroundColor = 'var(--danger)';
+                statusEl.innerText = formatDKK(Math.abs(left)) + ' OVERTRUKKET ☠️';
+                statusEl.style.color = 'var(--danger)';
+            } else if (left <= (weeklyBudget * 0.25)) {
+                hpBar.style.backgroundColor = 'var(--cat-2)';
+                statusEl.innerText = formatDKK(left) + ' TILBAGE ⚠️';
+                statusEl.style.color = 'var(--cat-2)';
+            } else {
+                hpBar.style.backgroundColor = 'var(--cat-1)';
+                statusEl.innerText = formatDKK(left) + ' TILBAGE ✅';
+                statusEl.style.color = 'var(--cat-1)';
+            }
+
+            // Dashboard
+            document.getElementById('monthLabel').innerText = now.toLocaleString('da-DK', { month: 'long', year: 'numeric' });
             const thisMonthTxns = transactions.filter(t => {
                 const d = new Date(t.date);
-                return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+                return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
             });
 
             const total = thisMonthTxns.reduce((sum, t) => sum + t.amount, 0);
             document.getElementById('totalSpend').innerText = formatDKK(total);
 
-            // Analytics / Bars
             const cats = {"Dagligvarer": 0, "Fornøjelser": 0, "Transport": 0, "Diverse": 0};
             thisMonthTxns.forEach(t => { if(cats[t.category] !== undefined) cats[t.category] += t.amount; });
             
@@ -185,9 +297,9 @@
                         </div>`;
                 }
             }
-            document.getElementById('analytics').innerHTML = htmlBars || '<div style="text-align:center; color:#666; font-size:12px; margin-top:10px;">Ingen data for denne måned endnu.</div>';
+            document.getElementById('analytics').innerHTML = htmlBars || '<div style="text-align:center; color:#666; font-size:12px; margin-top:10px;">Ingen data for denne måned.</div>';
 
-            // History List (last 15 across all time)
+            // Historik
             let htmlHist = '';
             transactions.slice(0, 15).forEach(t => {
                 const d = new Date(t.date).toLocaleDateString('da-DK', { day: '2-digit', month: 'short' });
